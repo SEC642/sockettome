@@ -115,7 +115,8 @@ class SocketToMe implements MessageComponentInterface {
 				case "C":
 					$numRecv = count($this->clients) - 1;
 					$this->debug (sprintf('Message from %s (%d) sending message "%s" to %d other connection%s' , $user->name, $from->resourceId, $arg, $numRecv, $numRecv == 1 ? '' : 's'));
-					foreach ($this->clients as $client) {
+					$user->send("You: " . $arg);
+                    foreach ($this->clients as $client) {
 						if ($from !== $client->connection) {
 							// The sender is not the receiver, send to each client connected
 							$client->send("User " . $user->name . ": " . $arg);
@@ -141,7 +142,13 @@ class SocketToMe implements MessageComponentInterface {
 				case "N":
 					$this->debug ("User " . $user->name . " (" . $from->resourceId . ") is now known as " . $arg);
 					$user->name = $arg;
-					$user->send("Name: You are now known as " . $arg);
+					$user->send("Name changed to " . $arg);
+                    foreach ($this->clients as $client) {
+                        if ($from !== $client->connection) {
+                            // The sender is not the receiver, send to each client connected
+                            $client->send("User " . $user->name . " is now " . $arg);
+                        }
+                    }
 					break;
 				default:
 					$this->debug ("Unknown command: " . $msg);
