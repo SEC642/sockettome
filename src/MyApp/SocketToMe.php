@@ -119,7 +119,7 @@ class SocketToMe implements MessageComponentInterface {
                     foreach ($this->clients as $client) {
 						if ($from !== $client->connection) {
 							// The sender is not the receiver, send to each client connected
-							$client->send("User " . $user->name . ": " . $arg);
+							$client->send($user->name . ": " . $arg);
 						}
 					}
 					break;
